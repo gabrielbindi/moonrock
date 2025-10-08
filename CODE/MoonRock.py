@@ -12,9 +12,9 @@ bvel= 30
 #setup for Pygame
 screen = pygame.display.set_mode((800, 600))
 
-player_img = pygame.image.load('../PNGs/Player.png').convert_alpha()
+player_img = pygame.image.load('../Assets/Player.png').convert_alpha()
 player_img = pygame.transform.scale(player_img, (50, 50))
-bullet_img = pygame.image.load('../PNGs/Laser Bullet.png').convert_alpha()
+bullet_img = pygame.image.load('../Assets/Laser Bullet.png').convert_alpha()
 bullet_img = pygame.transform.scale(bullet_img, (20, 20))
 bullet_img = pygame.transform.rotate(bullet_img, 90)
 running = True
