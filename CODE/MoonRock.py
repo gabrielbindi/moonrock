@@ -12,14 +12,18 @@ vel = 15
 #setup for Pygame
 screen = pygame.display.set_mode((800, 600))
 
-player_img = pygame.image.load('../moonrock/Assets/Player.png').convert_alpha()
+player_img = pygame.image.load('../Assets/Player.png').convert_alpha()
 player_img = pygame.transform.scale(player_img, (50, 50))
-bullet_img = pygame.image.load('../moonrock/Assets/Laser Bullet.png').convert_alpha()
+bullet_img = pygame.image.load('../Assets/Laser Bullet.png').convert_alpha()
 bullet_img = pygame.transform.scale(bullet_img, (8, 16))
 bullet_img = pygame.transform.rotate(bullet_img, 90)
+
+
+font = pygame.font.Font(None, 48)
+score = 0
+time_left = 350
+
 running = True
-
-
 while running:
     pygame.time.delay(100)
 
@@ -40,6 +44,7 @@ while running:
         y += vel
 
     if keys[pygame.K_SPACE]:
+        score += 1
         class Bullet(pygame.sprite.Sprite):
             def __init__(self, image, start_pos, speed_y):
                 super().__init__()
@@ -50,11 +55,13 @@ while running:
 
     screen.fill((0, 0, 0))
     screen.blit(player_img, (x, y))
+
+    time_text = font.render("Time = 350", True, (255, 255, 255))
+    score_text = font.render("Score = 0", True, (255, 255, 255))
+    screen.blit(time_text, (10, 10))
+    screen.blit(score_text, (600, 10))
     pygame.display.update()
     pygame.display.flip()
-
-
-
 
 pygame.quit()
 sys.exit()
