@@ -11,6 +11,7 @@ vel = 15
 
 #setup for Pygame
 screen = pygame.display.set_mode((800, 600))
+background = pygame.image.load('../Assets/background_Blue_Nebula_08.png').convert()
 
 player_img = pygame.image.load('../Assets/Player.png').convert_alpha()
 player_img = pygame.transform.scale(player_img, (50, 50))
@@ -58,6 +59,7 @@ while running:
 
     time_text = font.render("Time = 350", True, (255, 255, 255))
     score_text = font.render("Score = 0", True, (255, 255, 255))
+    screen.blit(background, (0, 0))
     screen.blit(time_text, (10, 10))
     screen.blit(score_text, (600, 10))
     pygame.display.update()
