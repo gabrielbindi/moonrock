@@ -21,19 +21,26 @@ screen = pygame.display.set_mode((800, 600))
 
 ''' Sprites '''
 
+background = pygame.image.load('../moonrock/Assets/background_Blue_Nebula_08.png').convert()
 player_img = pygame.image.load('../moonrock/Assets/Player.png').convert_alpha()
 player_img = pygame.transform.scale(player_img, (50, 50))
 bullet_img = pygame.image.load('../moonrock/Assets/Laser Bullet.png').convert_alpha()
 bullet_img = pygame.transform.scale(bullet_img, (8, 16))
 bullet_img = pygame.transform.rotate(bullet_img, 180)
-running = True
 
+
+font = pygame.font.Font(None, 48)
+score = 0
+time_left = 350
+
+
+running = True
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, image, start_pos, speed_y):
         super().__init__()
         self.image = image
-        self.rect = self.image.get_rect(center=start_pos)
+        self.rect = self.image.get_rect(center = start_pos)
         self.mask = pygame.mask.from_surface(self.image)
         self.speed_y = speed_y
 
@@ -63,15 +70,27 @@ while running:
         player_y += vel
 
     if keys[pygame.K_SPACE] and current_time - last_shot > shot_cooldown:
-        bullet = Bullet(bullet_img, (player_x, player_y), -10)
+        bullet = Bullet(bullet_img, (player_x + 25, player_y + 30), -10)
         bullet_group.add(bullet)
         last_shot = current_time
 
     screen.fill((0, 0, 0))
+
+    '''Background'''
+    screen.blit(background, (0, 0))
+    '''Clock/Timer'''
+    time_text = font.render("Time = 350", True, (255, 255, 255))
+    screen.blit(time_text, (10, 10))
+    '''Score'''
+    score_text = font.render("Score = 0", True, (255, 255, 255))
+    screen.blit(score_text, (600, 10))
+    '''Player'''
     screen.blit(player_img, (player_x, player_y))
-    pygame.display.update()
+    '''Bullet'''
     bullet_group.update()
     bullet_group.draw(screen)
+    '''Display'''
+    pygame.display.update()
     pygame.display.flip()
 
 
