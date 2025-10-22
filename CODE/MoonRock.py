@@ -52,6 +52,7 @@ class Bullet(pygame.sprite.Sprite):
 while running:
     pygame.time.delay(100)
 
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
