@@ -34,6 +34,9 @@ time_left = 350
 
 
 
+'''Enemy Class coming soon'''
+
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, image, start_pos, speed_y):
         super().__init__()
