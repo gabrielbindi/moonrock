@@ -1,6 +1,5 @@
 import pygame
 import sys
-
 pygame.init()
 pygame.display.set_caption("MoonRock")
 
@@ -13,12 +12,13 @@ vel = 15
 last_shot = 0
 shot_cooldown = 400
 
-bullet_group = pygame.sprite.Group()
 
+
+bullet_group = pygame.sprite.Group()
 
 #setup for Pygame
 screen = pygame.display.set_mode((800, 600))
-
+clock = pygame.time.Clock()
 ''' Sprites '''
 
 background = pygame.image.load('../moonrock/Assets/background_Blue_Nebula_08.png').convert()
@@ -27,8 +27,8 @@ player_img = pygame.transform.scale(player_img, (50, 50))
 bullet_img = pygame.image.load('../moonrock/Assets/Laser Bullet.png').convert_alpha()
 bullet_img = pygame.transform.scale(bullet_img, (8, 16))
 bullet_img = pygame.transform.rotate(bullet_img, 180)
-
-
+alien_img = pygame.image.load('../moonrock/Assets/alien.png').convert_alpha()
+alien_img = pygame.transform.scale(alien_img, (50, 50))
 font = pygame.font.Font(None, 48)
 score = 0
 time_left = 350
@@ -49,9 +49,29 @@ class Bullet(pygame.sprite.Sprite):
         if self.rect.y < 0:
             self.kill()
 
+class Alien(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = alien_img
+        self.rect = self.image.get_rect(center = (x, y))
+        self.speed = 2
+        self.direction = 4
+
+    def update(self):
+        self.rect.x += self.speed * self.direction
+        if self.rect.right >= 800:
+            self.direction = -3
+            self.rect.y += 20
+        elif self.rect.left <= 0:
+            self.direction = 3
+            self.rect.y += 20
+
+'''Enemies Variables'''
+enemy = Alien(100, 100)
+enemies = pygame.sprite.Group(enemy)
+
 while running:
     pygame.time.delay(100)
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -70,7 +90,7 @@ while running:
         player_y += vel
 
     if keys[pygame.K_SPACE] and current_time - last_shot > shot_cooldown:
-        bullet = Bullet(bullet_img, (player_x + 25, player_y + 30), -10)
+        bullet = Bullet(bullet_img, (player_x + 25, player_y + 30), -20)
         bullet_group.add(bullet)
         last_shot = current_time
 
@@ -78,6 +98,9 @@ while running:
 
     '''Background'''
     screen.blit(background, (0, 0))
+    '''Enemies'''
+    enemies.draw(screen)
+    enemies.update()
     '''Clock/Timer'''
     time_text = font.render("Time = 350", True, (255, 255, 255))
     screen.blit(time_text, (10, 10))
@@ -92,8 +115,7 @@ while running:
     '''Display'''
     pygame.display.update()
     pygame.display.flip()
-
-
+    clock.tick(60)
 
 
 pygame.quit()
