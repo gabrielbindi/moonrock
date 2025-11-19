@@ -30,6 +30,9 @@ bullet_img = pygame.image.load('../Assets/Laser Bullet.png').convert_alpha()
 bullet_img = pygame.transform.scale(bullet_img, (8, 16))
 bullet_img = pygame.transform.rotate(bullet_img, 180)
 
+laser_sound = pygame.mixer.Sound('../Assets/laser_shot.wav')
+laser_sound.set_volume(0.4)
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, image, start_pos, speed_y):
         super().__init__()
@@ -71,6 +74,7 @@ while running:
         bullet = Bullet(bullet_img, (player_x + 25, player_y + 30), -30) # "-10" laser firing speed
         bullet_group.add(bullet)
         score += 10
+        laser_sound.play()
 
 
     '''Background'''
