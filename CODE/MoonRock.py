@@ -33,6 +33,11 @@ bullet_img = pygame.transform.rotate(bullet_img, 180)
 laser_sound = pygame.mixer.Sound('../Assets/laser_shot.wav')
 laser_sound.set_volume(0.4)
 
+game_over_sound = pygame.mixer.Sound('../Assets/game_over.wav')
+game_over_sound.set_volume(0.6)
+
+game_over_played = False
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, image, start_pos, speed_y):
         super().__init__()
@@ -58,6 +63,9 @@ while running:
             running = False
         if event.type == timer_event and time_left > 0:
             time_left -= 1 # faster or slower Countdown
+        if time_left <= 0 and not game_over_played:
+                game_over_sound.play()
+                game_over_played = True
 
     keys = pygame.key.get_pressed()
 
