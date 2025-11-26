@@ -22,7 +22,10 @@ screen = pygame.display.set_mode((800, 600))
 
 ''' Sprites '''
 
-background = pygame.image.load('../Assets/background_Blue_Nebula_08.png').convert()
+background_image = pygame.image.load('../Assets/background_Blue_Nebula_08.png').convert()
+
+background_y_position = 0
+background_image_height = background_image.get_height()
 
 player_img = pygame.image.load('../Assets/Player.png').convert()
 player_img = pygame.transform.scale(player_img, (50, 50))
@@ -84,9 +87,15 @@ while running:
         score += 10
         laser_sound.play()
 
+    '''Parallax background moving'''
+    background_y_position = background_y_position + 1
 
-    '''Background'''
-    screen.blit(background, (0, 0))
+    if background_y_position >= background_image_height:
+        background_y_position = 0
+
+    '''Background (parallax)'''
+    screen.blit(background_image, (0, background_y_position))
+    screen.blit(background_image, (0, background_y_position - background_image_height))
     '''Clock/Timer'''
     time_text = font.render(f"Time = {time_left}", True, (255, 255, 255))
     screen.blit(time_text, (10, 10))
