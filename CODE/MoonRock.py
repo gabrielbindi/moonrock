@@ -1,43 +1,47 @@
 import pygame
 import sys
-
 pygame.init()
 pygame.font.init()
-font = pygame.font.Font(None, 48)
+font=pygame.font.Font(None, 48)
 score = 0
-time_left = 350
+time_left= 350
 
 pygame.display.set_caption("MoonRock")
+
 
 ''' Variables '''
 
 player_x = 400
 player_y = 550
 vel = 15
+last_shot = 0
+shot_cooldown = 400
 
 bullet_group = pygame.sprite.Group()
 
 #setup for Pygame
 screen = pygame.display.set_mode((800, 600))
+clock = pygame.time.Clock()
 
 ''' Sprites '''
-
-background_image = pygame.image.load('../Assets/background_Blue_Nebula_08.png').convert()
-
+background_image = pygame.image.load('../moonrock/Assets/background_Blue_Nebula_08.png').convert()
 background_y_position = 0
 background_image_height = background_image.get_height()
-
-player_img = pygame.image.load('../Assets/Player.png').convert()
+player_img = pygame.image.load('../moonrock/Assets/Player.png').convert_alpha()
 player_img = pygame.transform.scale(player_img, (50, 50))
 bullet_img = pygame.image.load('../Assets/Laser Bullet.png').convert_alpha()
 bullet_img = pygame.transform.scale(bullet_img, (8, 16))
 bullet_img = pygame.transform.rotate(bullet_img, 180)
+alien_img = pygame.image.load('../moonrock/Assets/alien.png').convert_alpha()
+alien_img = pygame.transform.scale(alien_img, (50, 50))
 
 laser_sound = pygame.mixer.Sound('../Assets/laser_shot.wav')
 laser_sound.set_volume(0.4)
 
 game_over_sound = pygame.mixer.Sound('../Assets/game_over.wav')
 game_over_sound.set_volume(0.6)
+
+game_over_played = False
 
 game_over_played = False
 
@@ -57,10 +61,29 @@ class Bullet(pygame.sprite.Sprite):
 timer_event = pygame.USEREVENT +1 # 1s timer
 pygame.time.set_timer(timer_event, 50)
 
-running = True
+class Alien(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = alien_img
+        self.rect = self.image.get_rect(center = (x, y))
+        self.speed = 2
+        self.direction = 4
+
+    def update(self):
+        self.rect.x += self.speed * self.direction
+        if self.rect.right >= 800:
+            self.direction = -3
+            self.rect.y += 20
+        elif self.rect.left <= 0:
+            self.direction = 3
+            self.rect.y += 20
+
+'''Enemies Variables'''
+enemy = Alien(100, 100)
+enemies = pygame.sprite.Group(enemy)
+
 while running:
     pygame.time.delay(100)
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -81,8 +104,8 @@ while running:
     if keys[pygame.K_DOWN] and player_y <= 540:
         player_y += vel
 
-    if keys[pygame.K_SPACE] and time_left > 0:
-        bullet = Bullet(bullet_img, (player_x + 25, player_y + 30), -30) # "-10" laser firing speed
+    if keys[pygame.K_SPACE] and current_time - last_shot > shot_cooldown:
+        bullet = Bullet(bullet_img, (player_x + 25, player_y + 30), -20)
         bullet_group.add(bullet)
         score += 10
         laser_sound.play()
@@ -93,9 +116,20 @@ while running:
     if background_y_position >= background_image_height:
         background_y_position = 0
 
+    '''Parallax background moving'''
+    background_y_position = background_y_position + 1
+
+    if background_y_position >= background_image_height:
+        background_y_position = 0
+
     '''Background (parallax)'''
     screen.blit(background_image, (0, background_y_position))
     screen.blit(background_image, (0, background_y_position - background_image_height))
+    '''Background'''
+    screen.blit(background_image, (0, 0))
+    '''Enemies'''
+    enemies.draw(screen)
+    enemies.update()
     '''Clock/Timer'''
     time_text = font.render(f"Time = {time_left}", True, (255, 255, 255))
     screen.blit(time_text, (10, 10))
@@ -110,6 +144,8 @@ while running:
     '''Display'''
     pygame.display.update()
     pygame.display.flip()
+    clock.tick(60)
+
 
 pygame.quit()
 sys.exit()
