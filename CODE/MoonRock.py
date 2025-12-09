@@ -29,7 +29,7 @@ background_y_position = 0
 background_image_height = background_image.get_height()
 player_img = pygame.image.load('../moonrock/Assets/Player.png').convert_alpha()
 player_img = pygame.transform.scale(player_img, (50, 50))
-bullet_img = pygame.image.load('../moonrock/Assets/Laser Bullet.png').convert_alpha()
+bullet_img = pygame.image.load('../Assets/Laser Bullet.png').convert_alpha()
 bullet_img = pygame.transform.scale(bullet_img, (8, 16))
 bullet_img = pygame.transform.rotate(bullet_img, 180)
 alien_img = pygame.image.load('../moonrock/Assets/alien.png').convert_alpha()
@@ -43,7 +43,7 @@ game_over_sound.set_volume(0.6)
 
 game_over_played = False
 
-running = True
+game_over_played = False
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, image, start_pos, speed_y):
@@ -87,10 +87,13 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
+        if event.type == timer_event and time_left > 0:
+            time_left -= 1 # faster or slower Countdown
+        if time_left <= 0 and not game_over_played:
+                game_over_sound.play()
+                game_over_played = True
 
     keys = pygame.key.get_pressed()
-    current_time = pygame.time.get_ticks()
 
     if keys[pygame.K_LEFT] and player_x >= 0:
         player_x -= vel
@@ -104,9 +107,14 @@ while running:
     if keys[pygame.K_SPACE] and current_time - last_shot > shot_cooldown:
         bullet = Bullet(bullet_img, (player_x + 25, player_y + 30), -20)
         bullet_group.add(bullet)
-        last_shot = current_time
+        score += 10
+        laser_sound.play()
 
-    screen.fill((0, 0, 0))
+    '''Parallax background moving'''
+    background_y_position = background_y_position + 1
+
+    if background_y_position >= background_image_height:
+        background_y_position = 0
 
     '''Parallax background moving'''
     background_y_position = background_y_position + 1
@@ -123,10 +131,10 @@ while running:
     enemies.draw(screen)
     enemies.update()
     '''Clock/Timer'''
-    time_text = font.render("Time = 350", True, (255, 255, 255))
+    time_text = font.render(f"Time = {time_left}", True, (255, 255, 255))
     screen.blit(time_text, (10, 10))
     '''Score'''
-    score_text = font.render("Score = 0", True, (255, 255, 255))
+    score_text = font.render(f"Score = {score}", True, (255, 255, 255))
     screen.blit(score_text, (600, 10))
     '''Player'''
     screen.blit(player_img, (player_x, player_y))
