@@ -1,7 +1,13 @@
 import pygame
 import sys
 pygame.init()
+pygame.font.init()
+font=pygame.font.Font(None, 48)
+score = 0
+time_left= 350
+
 pygame.display.set_caption("MoonRock")
+
 
 ''' Variables '''
 
@@ -12,16 +18,16 @@ vel = 15
 last_shot = 0
 shot_cooldown = 400
 
-
-
 bullet_group = pygame.sprite.Group()
 
 #setup for Pygame
 screen = pygame.display.set_mode((800, 600))
 clock = pygame.time.Clock()
-''' Sprites '''
 
-background = pygame.image.load('../moonrock/Assets/background_Blue_Nebula_08.png').convert()
+''' Sprites '''
+background_image = pygame.image.load('../moonrock/Assets/background_Blue_Nebula_08.png').convert()
+background_y_position = 0
+background_image_height = background_image.get_height()
 player_img = pygame.image.load('../moonrock/Assets/Player.png').convert_alpha()
 player_img = pygame.transform.scale(player_img, (50, 50))
 bullet_img = pygame.image.load('../moonrock/Assets/Laser Bullet.png').convert_alpha()
@@ -29,10 +35,14 @@ bullet_img = pygame.transform.scale(bullet_img, (8, 16))
 bullet_img = pygame.transform.rotate(bullet_img, 180)
 alien_img = pygame.image.load('../moonrock/Assets/alien.png').convert_alpha()
 alien_img = pygame.transform.scale(alien_img, (50, 50))
-font = pygame.font.Font(None, 48)
-score = 0
-time_left = 350
 
+laser_sound = pygame.mixer.Sound('../Assets/laser_shot.wav')
+laser_sound.set_volume(0.4)
+
+game_over_sound = pygame.mixer.Sound('../Assets/game_over.wav')
+game_over_sound.set_volume(0.6)
+
+game_over_played = False
 
 running = True
 
@@ -48,6 +58,9 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.y += self.speed_y
         if self.rect.y < 0:
             self.kill()
+
+timer_event = pygame.USEREVENT +1 # 1s timer
+pygame.time.set_timer(timer_event, 50)
 
 class Alien(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -96,8 +109,17 @@ while running:
 
     screen.fill((0, 0, 0))
 
+    '''Parallax background moving'''
+    background_y_position = background_y_position + 1
+
+    if background_y_position >= background_image_height:
+        background_y_position = 0
+
+    '''Background (parallax)'''
+    screen.blit(background_image, (0, background_y_position))
+    screen.blit(background_image, (0, background_y_position - background_image_height))
     '''Background'''
-    screen.blit(background, (0, 0))
+    screen.blit(background_image, (0, 0))
     '''Enemies'''
     enemies.draw(screen)
     enemies.update()
