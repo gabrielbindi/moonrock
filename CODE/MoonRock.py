@@ -14,7 +14,6 @@ pygame.display.set_caption("MoonRock")
 player_x = 400
 player_y = 550
 vel = 15
-
 last_shot = 0
 shot_cooldown = 400
 
