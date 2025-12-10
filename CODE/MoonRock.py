@@ -1,5 +1,9 @@
 import pygame
 import sys
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent  # .../moonrock
+ASSETS_DIR = BASE_DIR / 'Assets'                   # .../moonrock/Assets
+
 pygame.init()
 pygame.font.init()
 font=pygame.font.Font(None, 48)
@@ -24,26 +28,26 @@ screen = pygame.display.set_mode((800, 600))
 clock = pygame.time.Clock()
 
 ''' Sprites '''
-background_image = pygame.image.load('../moonrock/Assets/background_Blue_Nebula_08.png').convert()
+background_image = pygame.image.load(str(ASSETS_DIR/'background_Blue_Nebula_08.png')).convert()
 background_y_position = 0
 background_image_height = background_image.get_height()
-player_img = pygame.image.load('../moonrock/Assets/Player.png').convert_alpha()
+player_img = pygame.image.load(str(ASSETS_DIR/'Player.png')).convert_alpha()
 player_img = pygame.transform.scale(player_img, (50, 50))
-bullet_img = pygame.image.load('../Assets/Laser Bullet.png').convert_alpha()
+bullet_img = pygame.image.load(str(ASSETS_DIR/'Laser Bullet.png')).convert_alpha()
 bullet_img = pygame.transform.scale(bullet_img, (8, 16))
 bullet_img = pygame.transform.rotate(bullet_img, 180)
-alien_img = pygame.image.load('../moonrock/Assets/alien.png').convert_alpha()
+alien_img = pygame.image.load(str(ASSETS_DIR/'alien.png')).convert_alpha()
 alien_img = pygame.transform.scale(alien_img, (50, 50))
 
-laser_sound = pygame.mixer.Sound('../Assets/laser_shot.wav')
+''' Sound '''
+laser_sound = pygame.mixer.Sound(str(ASSETS_DIR/'laser_shot.wav'))
 laser_sound.set_volume(0.4)
-
-game_over_sound = pygame.mixer.Sound('../Assets/game_over.wav')
+game_over_sound = pygame.mixer.Sound(str(ASSETS_DIR / 'game_over.wav'))
 game_over_sound.set_volume(0.6)
 
 game_over_played = False
 
-game_over_played = False
+running = True
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, image, start_pos, speed_y):
@@ -94,7 +98,8 @@ while running:
                 game_over_played = True
 
     keys = pygame.key.get_pressed()
-
+    current_time = pygame.time.get_ticks()
+    
     if keys[pygame.K_LEFT] and player_x >= 0:
         player_x -= vel
     if keys[pygame.K_RIGHT] and player_x <= 750:
@@ -109,6 +114,7 @@ while running:
         bullet_group.add(bullet)
         score += 10
         laser_sound.play()
+
 
     '''Parallax background moving'''
     background_y_position = background_y_position + 1
@@ -126,7 +132,7 @@ while running:
     screen.blit(background_image, (0, background_y_position))
     screen.blit(background_image, (0, background_y_position - background_image_height))
     '''Background'''
-    screen.blit(background_image, (0, 0))
+    #screen.blit(background_image, (0, 0))
     '''Enemies'''
     enemies.draw(screen)
     enemies.update()
