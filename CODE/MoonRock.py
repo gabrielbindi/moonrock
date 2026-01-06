@@ -17,9 +17,9 @@ pygame.display.set_caption("MoonRock")
 
 player_x = 400
 player_y = 550
-vel = 15
+vel = 10
 last_shot = 0
-shot_cooldown = 400
+shot_cooldown = 600
 
 bullet_group = pygame.sprite.Group()
 
@@ -64,8 +64,8 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
 
 
-timer_event = pygame.USEREVENT + 1  # 1s timer
-pygame.time.set_timer(timer_event, 50)
+timer_event = pygame.USEREVENT + 2  # 1s timer
+pygame.time.set_timer(timer_event, 500)
 
 
 class Alien(pygame.sprite.Sprite):
@@ -114,9 +114,8 @@ while running:
         player_y += vel
 
     if keys[pygame.K_SPACE] and current_time - last_shot > shot_cooldown:
-        bullet = Bullet(bullet_img, (player_x + 25, player_y + 30), -20)
+        bullet = Bullet(bullet_img, (player_x + 25, player_y + 30), -40)
         bullet_group.add(bullet)
-        score += 10
         laser_sound.play()
 
     '''Parallax background moving'''
@@ -153,7 +152,7 @@ while running:
     '''Display'''
     pygame.display.update()
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(100)
 
 pygame.quit()
 sys.exit()
