@@ -103,7 +103,7 @@ while running:
 
     keys = pygame.key.get_pressed()
     current_time = pygame.time.get_ticks()
-
+    
     if keys[pygame.K_LEFT] and player_x >= 0:
         player_x -= vel
     if keys[pygame.K_RIGHT] and player_x <= 750:
