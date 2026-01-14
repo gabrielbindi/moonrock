@@ -5,7 +5,7 @@ from pathlib import Path
 
 """Paths"""
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 ASSETS_DIR = BASE_DIR / "Assets"
 
 """Settings"""
