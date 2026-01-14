@@ -1,0 +1,8 @@
+Imported libraries: 
+
+random
+Path from pathlib
+pygame 
+sys
+
+Python is required for this application.
